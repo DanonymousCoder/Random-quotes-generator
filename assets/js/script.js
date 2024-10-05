@@ -3,7 +3,7 @@ const quoteText = document.getElementById('quote');
 const newQuoteButton = document.getElementById('generate');
 const categorySelect = document.getElementById('category');
 const shareTwitterButton = document.getElementById('shareTwitter');
-
+const darkModeToggle = document.getElementById('dark-mode-toggle');
 // quotes array
 const quotes = {
      motivational: [
@@ -25,7 +25,7 @@ const quotes = {
 
 // event listener
 newQuoteButton.addEventListener("click", newQuote);
-
+darkModeToggle.addEventListener('click', toggleDarkMode);
 // newQuote function
 function newQuote() {
     const selectedCategory = categorySelect.value;  // Get the selected category from the dropdown
@@ -33,7 +33,7 @@ function newQuote() {
     const randomIndex = Math.floor(Math.random() * categoryQuotes.length);  // Get a random quote index
     const selectedQuote = categoryQuotes[randomIndex];  // Get the random quote from the selected category
 
-    typeWriterEffect(selectedQ);
+    typeWriterEffect(selectedQuote);
 }
 
 // Function to implement typewriter effect
@@ -53,9 +53,9 @@ function typeWriterEffect(text) {
     typeWriter();
   }
 
-
-// twitter share
-const shareTwitterButton = document.getElementById('shareTwitter');
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+}
 
 // Event listener for the Share on Twitter button
 shareTwitterButton.addEventListener("click", shareQuoteOnTwitter);
