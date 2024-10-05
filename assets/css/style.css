@@ -12,25 +12,59 @@ body {
 }
 
 .container {
-    background-color: black;
+    background-color: #2b2e4a;  /* Dark background for the container */
     display: flex;
     flex-direction: column;
-    gap: 1em;
+    gap: 2em;
     justify-content: center;
     align-items: center;
-    padding: 30px;
+    padding: 50px;
     border-radius: 10px;
     box-shadow: 0 0 30px 0 gray;
+}
+
+label {
+    color: white;
+    font-size: 22px;
 }
 
 .container p,
 .container h1{
     color: white;
+    text-align: center;
+}
+
+#quote {
+    font-size: 24px;  /* Larger text for the quote */
+    color: #ef8354;  /* Color for the quote text */
+    background-color: white;  /* White background for better visibility */
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    width: 100%;  /* Responsive width */
+    max-width: 500px;  /* Max width to keep it contained */
+    text-align: center;  /* Center align quote text */
 }
 
 button {
-    padding: 10px;
-    background-color: gray;
+    padding: 20px 30px;
+    background-color: #ef8354;  /* Color for the button */
     color: white;
     font-size: 18px;
+    border: none;  /* Remove border */
+    border-radius: 5px;  /* Rounded corners */
+    cursor: pointer;  /* Pointer cursor on hover */
+}
+
+button:hover {
+    background-color: #d57a48;  /* Darker shade on hover */
+}
+
+select {
+    padding: 10px;
+    background-color: #2b2e4a;  /* Same as container for consistency */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
