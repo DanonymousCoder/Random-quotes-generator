@@ -9,6 +9,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -67,4 +68,23 @@ select {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+/* dark mode */
+body.dark-mode button {
+    background-color: #333;
+}
+
+body.dark-mode {
+    background-color: #121212;
+}
+
+body.dark-mode .container {
+    background-color: #1e1e1e;
+    color: white;
+}
+
+body.dark-mode #quote {
+    color: white;  /* Change font color to white in dark mode */
+    background-color: #2b2e4a;  /* Optional: Change background to match dark theme */
 }
