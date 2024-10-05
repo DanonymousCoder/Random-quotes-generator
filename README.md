@@ -25,7 +25,7 @@ A web app that generates random quotes
 
 ## Contributing
 
-Contributions are welcome! Feel free to open an issue or submit a pull request.
+Contributions are welcome! Feel free to open an issue or submit a pull request. For the guidelines, check out [Contributing  Guidelines](CONTRIBUTING.md)
 
 
 ## Contributors
