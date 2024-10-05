@@ -2,6 +2,7 @@
 const quoteText = document.getElementById('quote');
 const newQuoteButton = document.getElementById('generate');
 const categorySelect = document.getElementById('category');
+const shareTwitterButton = document.getElementById('shareTwitter');
 
 // quotes array
 const quotes = {
@@ -51,3 +52,18 @@ function typeWriterEffect(text) {
   
     typeWriter();
   }
+
+
+// twitter share
+const shareTwitterButton = document.getElementById('shareTwitter');
+
+// Event listener for the Share on Twitter button
+shareTwitterButton.addEventListener("click", shareQuoteOnTwitter);
+
+// Function to share the quote on Twitter
+function shareQuoteOnTwitter() {
+    const selectedQ = quoteText.innerText;  // Get the currently displayed quote
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(selectedQ)}%20%23QuotesGenerator`;
+    
+    window.open(twitterUrl, '_blank');  // Open the Twitter share dialog
+}
