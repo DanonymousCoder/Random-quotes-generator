@@ -18,5 +18,23 @@ newQuoteButton.addEventListener("click", newQuote);
 // newQuote function
 function newQuote() {
     const randomQ = Math.floor(Math.random()* quotes.length);
-    quoteText.innerText = quotes[randomQ];
+    const selectedQ= quotes[randomQ];
+    typeWriterEffect(selectedQ);
 }
+
+// Function to implement typewriter effect
+function typeWriterEffect(text) {
+    let i = 0;
+    quoteText.innerHTML = '';  // Clear previous quote
+    const speed = 50;  // Speed of typewriter effect in milliseconds
+  
+    function typeWriter() {
+      if (i < text.length) {
+        quoteText.innerHTML += text.charAt(i);
+        i++;
+        setTimeout(typeWriter, speed);  // Call the function recursively
+      }
+    }
+  
+    typeWriter();
+  }
