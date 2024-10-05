@@ -2,9 +2,9 @@
 const quoteText = document.getElementById('quote');
 const newQuoteButton = document.getElementById('generate');
 const categorySelect = document.getElementById('category');
-
+const darkModeToggle = document.getElementById('dark-mode-toggle');
 // quotes array
-const quotes = [
+const quotes = {
      motivational: [
         "The greatest glory in living lies not in never falling, but in rising every time we fall. - Nelson Mandela",
         "The way to get started is to quit talking and begin doing. - Walt Disney",
@@ -20,11 +20,11 @@ const quotes = [
         "If you look at what you have in life, you’ll always have more. - Oprah Winfrey",
         "If life were predictable it would cease to be life, and be without flavor. - Eleanor Roosevelt",
     ]
-];
+  };
 
 // event listener
 newQuoteButton.addEventListener("click", newQuote);
-
+darkModeToggle.addEventListener('click', toggleDarkMode);
 // newQuote function
 function newQuote() {
     const selectedCategory = categorySelect.value;  // Get the selected category from the dropdown
@@ -32,7 +32,7 @@ function newQuote() {
     const randomIndex = Math.floor(Math.random() * categoryQuotes.length);  // Get a random quote index
     const selectedQuote = categoryQuotes[randomIndex];  // Get the random quote from the selected category
 
-    typeWriterEffect(selectedQ);
+    typeWriterEffect(selectedQuote);
 }
 
 // Function to implement typewriter effect
@@ -51,3 +51,7 @@ function typeWriterEffect(text) {
   
     typeWriter();
   }
+
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+}
