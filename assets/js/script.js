@@ -4,7 +4,7 @@ const newQuoteButton = document.getElementById('generate');
 const categorySelect = document.getElementById('category');
 
 // quotes array
-const quotes = [
+const quotes = {
      motivational: [
         "The greatest glory in living lies not in never falling, but in rising every time we fall. - Nelson Mandela",
         "The way to get started is to quit talking and begin doing. - Walt Disney",
@@ -20,7 +20,7 @@ const quotes = [
         "If you look at what you have in life, you’ll always have more. - Oprah Winfrey",
         "If life were predictable it would cease to be life, and be without flavor. - Eleanor Roosevelt",
     ]
-];
+};
 
 // event listener
 newQuoteButton.addEventListener("click", newQuote);
