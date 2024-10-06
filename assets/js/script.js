@@ -4,6 +4,7 @@ const newQuoteButton = document.getElementById('generate');
 const categorySelect = document.getElementById('category');
 const shareTwitterButton = document.getElementById('shareTwitter');
 const darkModeToggle = document.getElementById('dark-mode-toggle');
+const copyQuoteButton = document.getElementById('copy-quote');
 // quotes array
 const quotes = {
      motivational: [
@@ -26,6 +27,7 @@ const quotes = {
 // event listener
 newQuoteButton.addEventListener("click", newQuote);
 darkModeToggle.addEventListener('click', toggleDarkMode);
+copyQuoteButton.addEventListener('click',copyQuote);
 // newQuote function
 function newQuote() {
     const selectedCategory = categorySelect.value;  // Get the selected category from the dropdown
@@ -66,4 +68,15 @@ function shareQuoteOnTwitter() {
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(selectedQ)}%20%23QuotesGenerator`;
     
     window.open(twitterUrl, '_blank');  // Open the Twitter share dialog
+}
+
+function copyQuote(){
+  const quote = quoteText.innerText; //Extract the quote from the div
+  if (quote==="Your quote will appear here..."){ //in case no quote is generated do not copy anything
+    alert('Generate a quote first');
+    return 1;
+  }
+  navigator.clipboard.writeText(quote); //copy quote to the clipboard
+  alert("Quote Copied");
+  return 0;
 }

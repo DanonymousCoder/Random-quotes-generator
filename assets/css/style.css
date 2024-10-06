@@ -88,3 +88,14 @@ body.dark-mode #quote {
     color: white;  /* Change font color to white in dark mode */
     background-color: #2b2e4a;  /* Optional: Change background to match dark theme */
 }
+
+/* Make the buttons reponsive on smaller screens*/
+.butns{
+    display: flex; 
+    gap: 1rem;
+}
+@media screen and (max-width:700px) {
+    .butns{
+        flex-direction: column;
+    }
+}
