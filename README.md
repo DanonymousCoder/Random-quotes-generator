@@ -31,7 +31,7 @@ Contributions are welcome! Feel free to open an issue or submit a pull request. 
 ## Contributors
 
 <a href="https://github.com/DanonymousCoder/Random-quotes-generator/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=/DanonymousCoder/Random-quotes-generator" />
+  <img src="https://contrib.rocks/image?repo=DanonymousCoder/Random-quotes-generator" />
 </a>
 
 ## License
