@@ -70,13 +70,29 @@ function shareQuoteOnTwitter() {
     window.open(twitterUrl, '_blank');  // Open the Twitter share dialog
 }
 
-function copyQuote(){
-  const quote = quoteText.innerText; //Extract the quote from the div
-  if (quote==="Your quote will appear here..."){ //in case no quote is generated do not copy anything
-    alert('Generate a quote first');
-    return 1;
+// Function to copy the quote to the clipboard
+function copyQuote() {
+  const quote = quoteText.innerText; // Extract the quote from the div
+  
+  // Check if the quote is the default message
+  if (quote === "Your quote will appear here...") {
+    alert('Generate a quote first'); // Alert the user to generate a quote
+    return; // Early return if the default message is displayed
   }
-  navigator.clipboard.writeText(quote); //copy quote to the clipboard
-  alert("Quote Copied");
-  return 0;
+
+  // Check if the Clipboard API is supported
+  if (!navigator.clipboard) {
+    alert('Clipboard API not supported'); // Alert the user if Clipboard API is not supported
+    return; // Early return if Clipboard API is not supported
+  }
+
+  // Copy the quote to the clipboard and handle the promise
+  navigator.clipboard.writeText(quote)
+    .then(() => {
+      alert("Quote Copied"); // Alert the user on successful copy
+    })
+    .catch(err => {
+      console.error('Failed to copy: ', err); // Log the error to the console
+      alert('Failed to copy quote'); // Alert the user on failure to copy
+    });
 }
