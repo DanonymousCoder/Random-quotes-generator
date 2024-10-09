@@ -3,42 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- 
-        CSS
-    -->
-
     <link rel="stylesheet" href="./assets/css/style.css">
-
-
     <title>Random Quotes Generator</title>
 </head>
 <body>
-
   <div class="container">
     <div>
-    <label for="category">Choose a category:</label>
-    <select id="category">
-      <option value="motivational">Motivational</option>
-      <option value="funny">Funny</option>
-      <option value="inspirational">Inspirational</option>
-    </select>
+      <label for="category">Choose a category:</label>
+      <select id="category">
+        <option value="motivational">Motivational</option>
+        <option value="funny">Funny</option>
+        <option value="inspirational">Inspirational</option>
+      </select>
+    </div>
+    <div id="quote">Your quote will appear here...</div>
+    <div class="butns">
+      <button id="shareTwitter">Share on Twitter</button>
+      <button id="generate">Generate New Quote</button>
+      <button id="dark-mode-toggle">Dark Mode</button>
+      <button id="copy-quote">Copy</button>
+      <button id="gen-ai">Ai_Quotes</button>
+    </div>
   </div>
-  <div id="quote">Your quote will appear here...</div>
-  <div class="butns">
-    <button id="shareTwitter">Share on Twitter</button>
-  <button id="generate">Generate New Quote</button>
-  <button id="dark-mode-toggle">Dark Mode</button>
-  <button id="copy-quote">Copy</button>
-  </div>
-  </div>
 
-
-    <!-- 
-        JS
-    -->
-
-    <script src="./assets/js/script.js"></script>
-
+  <script src="./assets/js/script.js"></script>
 </body>
 </html>

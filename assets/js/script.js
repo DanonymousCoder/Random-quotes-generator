@@ -96,3 +96,33 @@ function copyQuote() {
       alert('Failed to copy quote'); // Alert the user on failure to copy
     });
 }
+
+
+document.getElementById('gen-ai').addEventListener('click', async () => {
+  const category = document.getElementById('category').value;
+
+  try {
+      const response = await fetch('http://localhost:3000/generate-ai-quotes', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ category }),
+      });
+
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+
+      // Store the AI quotes in local storage
+      localStorage.setItem('aiQuotes', JSON.stringify(data.quotes));
+
+      // Redirect to ai.html
+      window.location.href = 'ai.html';
+  } catch (error) {
+      console.error('Error fetching AI quotes:', error);
+      alert('Failed to generate quotes. Please try again later.');
+  }
+});
