@@ -23,6 +23,12 @@ Thanks for your interest in contributing! Here’s how you can help:
 
    Describe your changes in detail. Reference any issues you worked on.
 
+# Starting up the project
+- Ensure you have the Live Server (Five Server) extension by Yannick to be precise on VScode
+- ![five server image](/assets/images/five-server.png)
+- The extension should already be activated, and if it isn't ensure you click the enable button.
+- ![five server image](/assets/images/five-server.png)
+
 ## Code Style
 - Follow standard HTML, CSS, and JavaScript practices.
 - Keep your code clean and readable.
