@@ -23,6 +23,20 @@ Thanks for your interest in contributing! Here’s how you can help:
 
    Describe your changes in detail. Reference any issues you worked on.
 
+## Starting up the Project
+
+1. **Install Live Server Extension**
+   - Ensure you have the Live Server (Five Server) extension by Yannick installed in VS Code.
+   - ![Five Server Extension](/assets/images/five-server.png)
+
+2. **Activate the Extension**
+   - The extension should already be activated. If it isn't, click the enable button.
+
+3. **Start the Live Server**
+   - Open the `index.html` file.
+   - At the bottom corner of the screen, click the **Go Live** button to start the server.
+   - ![Go Live Button](/assets/images/bottom-live-server.png)
+
 ## Code Style
 - Follow standard HTML, CSS, and JavaScript practices.
 - Keep your code clean and readable.
