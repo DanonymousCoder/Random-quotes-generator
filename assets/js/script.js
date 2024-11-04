@@ -80,7 +80,7 @@ function newQuote() {
   // Enable the button after the quote is fully displayed
   setTimeout(() => {
     buttonDisabled("false");
-  }, selectedQuote.length * 50); // Adjust the delay based on typewriter speed and quote length
+  }, selectedQuote.text.length * 60); // Adjust the delay based on typewriter speed and quote length
 
   typeWriterEffect(selectedQuote.text);
   authorText.textContent = selectedQuote.author;
