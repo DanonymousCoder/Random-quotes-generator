@@ -7,6 +7,7 @@ const darkModeToggle = document.getElementById("dark-mode-toggle");
 const copyQuoteButton = document.getElementById("copy-quote");
 const authorText = document.getElementById("author");
 const authorImage = document.getElementById("author-image");
+
 // quotes array
 const quotes = {
   motivational: [
@@ -68,10 +69,18 @@ darkModeToggle.addEventListener("click", toggleDarkMode);
 copyQuoteButton.addEventListener("click", copyQuote);
 // newQuote function
 function newQuote() {
+  // Disable the button to prevent multiple clicks
+  buttonDisabled("true");
+
   const selectedCategory = categorySelect.value; // Get the selected category from the dropdown
   const categoryQuotes = quotes[selectedCategory]; // Get quotes from the selected category
   const randomIndex = Math.floor(Math.random() * categoryQuotes.length); // Get a random quote index
   const selectedQuote = categoryQuotes[randomIndex]; // Get the random quote from the selected category
+
+  // Enable the button after the quote is fully displayed
+  setTimeout(() => {
+    buttonDisabled("false");
+  }, selectedQuote.length * 50); // Adjust the delay based on typewriter speed and quote length
 
   typeWriterEffect(selectedQuote.text);
   authorText.textContent = selectedQuote.author;
@@ -144,20 +153,28 @@ function copyQuote() {
 // Prevents multiple button clicks
 function buttonDisabled(temp) {
   if (temp === "true") {
+    // Add the class to disable the button and cursor not allowed
     newQuoteButton.disabled = true;
-    // Toggle the class to disable the button and cursor not allowed
-    newQuoteButton.classList.toggle("btnDisabled");
+    newQuoteButton.classList.add("btnDisabled");
     shareTwitterButton.disabled = true;
-    shareTwitterButton.classList.toggle("btnDisabled");
+    shareTwitterButton.classList.add("btnDisabled");
     copyQuoteButton.disabled = true;
-    copyQuoteButton.classList.toggle("btnDisabled");
+    copyQuoteButton.classList.add("btnDisabled");
     categorySelect.disabled = true;
-    categorySelect.classList.toggle("btnDisabled");
+    categorySelect.classList.add("btnDisabled");
+    document.getElementById("gen-ai").disabled = true;
+    document.getElementById("gen-ai").classList.add("btnDisabled");
   } else {
     newQuoteButton.disabled = false;
+    newQuoteButton.classList.remove("btnDisabled");
     shareTwitterButton.disabled = false;
+    shareTwitterButton.classList.remove("btnDisabled");
     copyQuoteButton.disabled = false;
+    copyQuoteButton.classList.remove("btnDisabled");
     categorySelect.disabled = false;
+    categorySelect.classList.remove("btnDisabled");
+    document.getElementById("gen-ai").disabled = false;
+    document.getElementById("gen-ai").classList.remove("btnDisabled");
   }
 }
 

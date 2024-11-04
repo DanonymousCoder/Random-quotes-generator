@@ -110,6 +110,7 @@ body.dark-mode #author {
 
 .btnDisabled {
   cursor: not-allowed;
+  opacity: 0.5; /* Make the button appear slightly transparent when disabled */
 }
 
 
