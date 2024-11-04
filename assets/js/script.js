@@ -5,22 +5,60 @@ const categorySelect = document.getElementById("category");
 const shareTwitterButton = document.getElementById("shareTwitter");
 const darkModeToggle = document.getElementById("dark-mode-toggle");
 const copyQuoteButton = document.getElementById("copy-quote");
+const authorText = document.getElementById("author");
+const authorImage = document.getElementById("author-image");
 // quotes array
 const quotes = {
   motivational: [
-    "The greatest glory in living lies not in never falling, but in rising every time we fall. - Nelson Mandela",
-    "The way to get started is to quit talking and begin doing. - Walt Disney",
-    "Your time is limited, so don’t waste it living someone else’s life. - Steve Jobs",
+    {
+      text: "The greatest glory in living lies not in never falling, but in rising every time we fall.",
+      author: "Nelson Mandela",
+      image: "./assets/images/nelson-mandela.jpg"
+    },
+    {
+      text: "The way to get started is to quit talking and begin doing.",
+      author: "Walt Disney",
+      image: "./assets/images/walt-disney.jpg"
+    },
+    {
+      text: "Your time is limited, so don’t waste it living someone else’s life.",
+      author: "Steve Jobs",
+      image: "./assets/images/steve-jobs.jpg"
+    }
   ],
   funny: [
-    "I'm not arguing, I'm just explaining why I'm right.",
-    "Why don’t skeletons fight each other? They don’t have the guts.",
-    "My fake plants died because I did not pretend to water them. - Mitch Hedberg",
+    {
+      text: "I'm not arguing, I'm just explaining why I'm right.",
+      author: "Unknown",
+      image: "./assets/images/default.jpg"
+    },
+    {
+      text: "Why don’t skeletons fight each other? They don’t have the guts.",
+      author: "Unknown",
+      image: "./assets/images/default.jpg"
+    },
+    {
+      text: "My fake plants died because I did not pretend to water them.",
+      author: "Mitch Hedberg",
+      image: "./assets/images/mitch-hedberg.jpg"
+    }
   ],
   inspirational: [
-    "Life is what happens when you’re busy making other plans. - John Lennon",
-    "If you look at what you have in life, you’ll always have more. - Oprah Winfrey",
-    "If life were predictable it would cease to be life, and be without flavor. - Eleanor Roosevelt",
+    {
+      text: "Life is what happens when you’re busy making other plans.",
+      author: "John Lennon",
+      image: "./assets/images/john-lennon.jpg"
+    },
+    {
+      text: "If you look at what you have in life, you’ll always have more.",
+      author: "Oprah Winfrey",
+      image: "./assets/images/oprah-winfrey.jpg"
+    },
+    {
+      text: "If life were predictable it would cease to be life, and be without flavor.",
+      author: "Eleanor Roosevelt",
+      image: "./assets/images/eleanor-roosevelt.jpg"
+    }
   ],
 };
 
@@ -35,7 +73,9 @@ function newQuote() {
   const randomIndex = Math.floor(Math.random() * categoryQuotes.length); // Get a random quote index
   const selectedQuote = categoryQuotes[randomIndex]; // Get the random quote from the selected category
 
-  typeWriterEffect(selectedQuote);
+  typeWriterEffect(selectedQuote.text);
+  authorText.textContent = selectedQuote.author;
+  authorImage.src = selectedQuote.image;
 }
 
 // Function to implement typewriter effect
