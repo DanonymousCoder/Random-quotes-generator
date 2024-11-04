@@ -5,9 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./assets/css/style.css" />
     <title>Random Quotes Generator</title>
+    <style>
+      .vertical-layout {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    </style>
   </head>
-  <body>
-    <div class="container">
+  <body class="vertical-layout">
+    <div class="logo-container" style="text-align: center; margin-bottom: 20px;">
+      <img src="assets/images/logo.png" alt="Random Quotes Generator Logo" style="width: 400px; height: auto;">
+    </div>
+
+    <div class="container" style="margin-top: 10px; text-align: center;">
       <div>
         <label for="category">Choose a category:</label>
         <select id="category">
