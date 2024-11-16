@@ -1,3 +1,5 @@
+const FAVORITES_KEY = "favoriteQuotes";
+
 // DOM
 const quoteText = document.getElementById("quote");
 const newQuoteButton = document.getElementById("generate");
@@ -5,6 +7,7 @@ const categorySelect = document.getElementById("category");
 const shareTwitterButton = document.getElementById("shareTwitter");
 const darkModeToggle = document.getElementById("dark-mode-toggle");
 const copyQuoteButton = document.getElementById("copy-quote");
+const favoriteIcon = document.getElementById("favorite-icon");
 // quotes array
 const quotes = {
   motivational: [
@@ -28,10 +31,15 @@ const quotes = {
 newQuoteButton.addEventListener("click", newQuote);
 darkModeToggle.addEventListener("click", toggleDarkMode);
 copyQuoteButton.addEventListener("click", copyQuote);
+favoriteIcon.addEventListener("click", toggleFavorite);
+
 // newQuote function
 function newQuote() {
   // Disable the button to prevent multiple clicks
   buttonDisabled("true");
+
+  // Set the icon to orange while a new quote is generating
+  favoriteIcon.style.color = "#ef8354"; // 주황색으로 설정
 
   const selectedCategory = categorySelect.value; // Get the selected category from the dropdown
   const categoryQuotes = quotes[selectedCategory]; // Get quotes from the selected category
@@ -43,11 +51,11 @@ function newQuote() {
     buttonDisabled("false");
   }, selectedQuote.length * 50); // Adjust the delay based on typewriter speed and quote length
 
-  typeWriterEffect(selectedQuote);
+  typeWriterEffect(selectedQuote, updateFavoriteIconColor);
 }
 
 // Function to implement typewriter effect
-function typeWriterEffect(text) {
+function typeWriterEffect(text, callback) {
   let i = 0;
   quoteText.innerHTML = ""; // Clear previous quote
   const speed = 50; // Speed of typewriter effect in milliseconds
@@ -57,6 +65,8 @@ function typeWriterEffect(text) {
       quoteText.innerHTML += text.charAt(i);
       i++;
       setTimeout(typeWriter, speed); // Call the function recursively
+    } else if (callback) {
+      callback(); // Call callback after typing effect is complete
     }
   }
 
@@ -169,3 +179,42 @@ document.getElementById("gen-ai").addEventListener("click", async () => {
 
   buttonDisabled("false"); // calling function to enable the button
 });
+
+// Toggle favorite status of the current quote
+function toggleFavorite() {
+  const quote = quoteText.innerText;
+
+  if (quote === "Your quote will appear here...") {
+    alert("Please generate a quote first!");
+    return;
+  }
+
+  const favorites = JSON.parse(localStorage.getItem(FAVORITES_KEY)) || [];
+
+  if (favorites.includes(quote)) {
+    const index = favorites.indexOf(quote);
+    favorites.splice(index, 1);
+    alert("Quote removed from favorites!");
+  } else {
+    favorites.push(quote);
+    alert("Quote added to favorites!");
+  }
+
+  localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+  updateFavoriteIconColor(); // Update icon color based on new favorite status
+}
+
+// Check if the quote is already favorited
+function isQuoteFavorited(quote) {
+  const favorites = JSON.parse(localStorage.getItem(FAVORITES_KEY)) || [];
+  return favorites.includes(quote);
+}
+
+// Update the icon color based on favorite status
+function updateFavoriteIconColor() {
+  const quote = quoteText.innerText;
+  favoriteIcon.style.color = isQuoteFavorited(quote) ? "yellow" : "#ef8354";
+}
+
+// Initial icon color setup when the page loads
+updateFavoriteIconColor();
