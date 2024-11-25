@@ -14,51 +14,42 @@ const quotes = {
     {
       text: "The greatest glory in living lies not in never falling, but in rising every time we fall.",
       author: "Nelson Mandela",
-      image: "./assets/images/nelson-mandela.jpg"
     },
     {
       text: "The way to get started is to quit talking and begin doing.",
       author: "Walt Disney",
-      image: "./assets/images/walt-disney.jpg"
     },
     {
       text: "Your time is limited, so don’t waste it living someone else’s life.",
       author: "Steve Jobs",
-      image: "./assets/images/steve-jobs.jpg"
     }
   ],
   funny: [
     {
       text: "I'm not arguing, I'm just explaining why I'm right.",
       author: "Unknown",
-      image: "./assets/images/default.jpg"
     },
     {
       text: "Why don’t skeletons fight each other? They don’t have the guts.",
       author: "Unknown",
-      image: "./assets/images/default.jpg"
     },
     {
       text: "My fake plants died because I did not pretend to water them.",
       author: "Mitch Hedberg",
-      image: "./assets/images/mitch-hedberg.jpg"
     }
   ],
   inspirational: [
     {
       text: "Life is what happens when you’re busy making other plans.",
       author: "John Lennon",
-      image: "./assets/images/john-lennon.jpg"
     },
     {
       text: "If you look at what you have in life, you’ll always have more.",
       author: "Oprah Winfrey",
-      image: "./assets/images/oprah-winfrey.jpg"
     },
     {
       text: "If life were predictable it would cease to be life, and be without flavor.",
       author: "Eleanor Roosevelt",
-      image: "./assets/images/eleanor-roosevelt.jpg"
     }
   ],
 };
@@ -68,7 +59,7 @@ newQuoteButton.addEventListener("click", newQuote);
 darkModeToggle.addEventListener("click", toggleDarkMode);
 copyQuoteButton.addEventListener("click", copyQuote);
 // newQuote function
-function newQuote() {
+async function newQuote() {
   // Disable the button to prevent multiple clicks
   buttonDisabled("true");
 
@@ -84,7 +75,10 @@ function newQuote() {
 
   typeWriterEffect(selectedQuote.text);
   authorText.textContent = selectedQuote.author;
-  authorImage.src = selectedQuote.image;
+
+  // Fetch images from Wikipedia
+  const authorImageUrl = await fetchWikipediaImage(selectedQuote.author);
+  authorImage.src = authorImageUrl;
 }
 
 // Function to implement typewriter effect
@@ -210,3 +204,30 @@ document.getElementById("gen-ai").addEventListener("click", async () => {
 
   buttonDisabled("false"); // calling function to enable the button
 });
+
+// Wikipedia API request function
+async function fetchWikipediaImage(authorName) {
+  const apiUrl = `https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages&titles=${encodeURIComponent(authorName)}&pithumbsize=200`;
+  
+  try {
+    const response = await fetch(apiUrl);
+    if (!response.ok) {
+      throw new Error("Failed to fetch data from Wikipedia");
+    }
+
+    const data = await response.json();
+    const pages = data.query.pages;
+
+    // Extract thumbnail URL
+    for (const pageId in pages) {
+      if (pages[pageId].thumbnail) {
+        return pages[pageId].thumbnail.source;
+      }
+    }
+
+    return "./assets/images/default.jpg"; // Return default image if none exists
+  } catch (error) {
+    console.error("Error fetching Wikipedia image:", error);
+    return "./assets/images/default.jpg"; // Handle errors
+  }
+}
