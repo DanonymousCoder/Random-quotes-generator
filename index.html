@@ -4,10 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./assets/css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Random Quotes Generator</title>
+    <style>
+      .vertical-layout {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    </style>
   </head>
-  <body>
-    <div class="container">
+
+    <header class="header-icons">
+      <i class="fas fa-star" id="favorite-icon" title="즐겨찾기"></i>
+      <i class="fas fa-user" id="mypage-icon" title="마이페이지"></i>
+    </header>
+  
+  <body class="vertical-layout">
+    <div class="logo-container" style="text-align: center; margin-bottom: 20px;">
+      <img src="assets/images/logo.png" alt="Random Quotes Generator Logo" style="width: 400px; height: auto;">
+    </div>
+
+    <div class="container" style="margin-top: 10px; text-align: center;">
       <div>
         <label for="category">Choose a category:</label>
         <select id="category">
@@ -35,5 +53,10 @@
     </div>
 
     <script src="./assets/js/script.js"></script>
+    <script>
+      document.getElementById("mypage-icon").addEventListener("click", () => {
+        window.location.href = "like.html";
+      });
+    </script>
   </body>
 </html>
