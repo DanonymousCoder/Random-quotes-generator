@@ -34,7 +34,15 @@
           <option value="inspirational">Inspirational</option>
         </select>
       </div>
-      <div id="quote">Your quote will appear here...</div>
+      <div class="quote-container">
+        <div class="quote-content">
+          <div id="quote">Your quote will appear here...</div>
+        </div>
+        <div class="author-section">
+          <img id="author-image" src="./assets/images/default.jpg" alt="Author Image" class="author-image" />
+          <button id="author" class = "btn" onclick="goToAuthorPage()">Author Name</button>
+        </div>
+      </div>
       <div class="butns">
         <button id="shareTwitter" class="btn">Share on Twitter</button>
         <button id="generate" class="btn">Generate New Quote</button>
