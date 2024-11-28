@@ -8,22 +8,52 @@ const shareTwitterButton = document.getElementById("shareTwitter");
 const darkModeToggle = document.getElementById("dark-mode-toggle");
 const copyQuoteButton = document.getElementById("copy-quote");
 const favoriteIcon = document.getElementById("favorite-icon");
+const authorText = document.getElementById("author");
+const authorImage = document.getElementById("author-image");
+
 // quotes array
 const quotes = {
   motivational: [
-    "The greatest glory in living lies not in never falling, but in rising every time we fall. - Nelson Mandela",
-    "The way to get started is to quit talking and begin doing. - Walt Disney",
-    "Your time is limited, so don’t waste it living someone else’s life. - Steve Jobs",
+    {
+      text: "The greatest glory in living lies not in never falling, but in rising every time we fall.",
+      author: "Nelson Mandela",
+    },
+    {
+      text: "The way to get started is to quit talking and begin doing.",
+      author: "Walt Disney",
+    },
+    {
+      text: "Your time is limited, so don’t waste it living someone else’s life.",
+      author: "Steve Jobs",
+    }
   ],
   funny: [
-    "I'm not arguing, I'm just explaining why I'm right.",
-    "Why don’t skeletons fight each other? They don’t have the guts.",
-    "My fake plants died because I did not pretend to water them. - Mitch Hedberg",
+    {
+      text: "I'm not arguing, I'm just explaining why I'm right.",
+      author: "Unknown",
+    },
+    {
+      text: "Why don’t skeletons fight each other? They don’t have the guts.",
+      author: "Unknown",
+    },
+    {
+      text: "My fake plants died because I did not pretend to water them.",
+      author: "Mitch Hedberg",
+    }
   ],
   inspirational: [
-    "Life is what happens when you’re busy making other plans. - John Lennon",
-    "If you look at what you have in life, you’ll always have more. - Oprah Winfrey",
-    "If life were predictable it would cease to be life, and be without flavor. - Eleanor Roosevelt",
+    {
+      text: "Life is what happens when you’re busy making other plans.",
+      author: "John Lennon",
+    },
+    {
+      text: "If you look at what you have in life, you’ll always have more.",
+      author: "Oprah Winfrey",
+    },
+    {
+      text: "If life were predictable it would cease to be life, and be without flavor.",
+      author: "Eleanor Roosevelt",
+    }
   ],
 };
 
@@ -34,7 +64,7 @@ copyQuoteButton.addEventListener("click", copyQuote);
 favoriteIcon.addEventListener("click", toggleFavorite);
 
 // newQuote function
-function newQuote() {
+async function newQuote() {
   // Disable the button to prevent multiple clicks
   buttonDisabled("true");
 
@@ -49,9 +79,14 @@ function newQuote() {
   // Enable the button after the quote is fully displayed
   setTimeout(() => {
     buttonDisabled("false");
-  }, selectedQuote.length * 50); // Adjust the delay based on typewriter speed and quote length
+  }, selectedQuote.text.length * 60); // Adjust the delay based on typewriter speed and quote length
 
-  typeWriterEffect(selectedQuote, updateFavoriteIconColor);
+  typeWriterEffect(selectedQuote.text, updateFavoriteIconColor);
+  authorText.textContent = selectedQuote.author;
+
+  // Fetch images from Wikipedia
+  const authorImageUrl = await fetchWikipediaImage(selectedQuote.author);
+  authorImage.src = authorImageUrl;
 }
 
 // Function to implement typewriter effect
@@ -218,3 +253,38 @@ function updateFavoriteIconColor() {
 
 // Initial icon color setup when the page loads
 updateFavoriteIconColor();
+
+// Wikipedia API request function
+async function fetchWikipediaImage(authorName) {
+  const apiUrl = `https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages&titles=${encodeURIComponent(authorName)}&pithumbsize=200`;
+  
+  try {
+    const response = await fetch(apiUrl);
+    if (!response.ok) {
+      throw new Error("Failed to fetch data from Wikipedia");
+    }
+
+    const data = await response.json();
+    const pages = data.query.pages;
+
+    // Extract thumbnail URL
+    for (const pageId in pages) {
+      if (pages[pageId].thumbnail) {
+        return pages[pageId].thumbnail.source;
+      }
+    }
+
+    return "./assets/images/default.jpg"; // Return default image if none exists
+  } catch (error) {
+    console.error("Error fetching Wikipedia image:", error);
+    return "./assets/images/default.jpg"; // Handle errors
+  }
+}
+
+function goToAuthorPage() {
+  const authorName = document.getElementById("author").textContent;
+  const wikiLink = `https://en.wikipedia.org/wiki/${encodeURIComponent(authorName.replace(/ /g, "_"))}`;
+  if (authorName != "Author Name" && authorName != "unknown"){
+    window.open(wikiLink, '_blank');
+  }  
+}
