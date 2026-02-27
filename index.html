@@ -15,14 +15,46 @@
     </style>
   </head>
 
+  <body class="vertical-layout">
     <header class="header-icons">
       <i class="fas fa-star" id="favorite-icon" title="즐겨찾기"></i>
+      <i class="fas fa-history" id="history-toggle" title="历史记录"></i>
       <i class="fas fa-user" id="mypage-icon" title="마이페이지"></i>
     </header>
-  
-  <body class="vertical-layout">
+
+    <div id="history-overlay" class="history-overlay"></div>
+    <aside id="history-panel" class="history-panel">
+      <div class="history-header">
+        <h3>历史记录</h3>
+        <div style="display: flex; gap: 10px;">
+          <button id="clear-history" class="clear-btn">清空</button>
+          <button id="close-history" class="close-btn"><i class="fas fa-times"></i></button>
+        </div>
+      </div>
+      <div id="history-list" class="history-list"></div>
+    </aside>
+
+    <div class="main-content">
     <div class="logo-container" style="text-align: center; margin-bottom: 20px;">
       <img src="assets/images/logo.png" alt="Random Quotes Generator Logo" style="width: 400px; height: auto;">
+    </div>
+
+    <div id="topic-buttons" class="topic-buttons">
+      <button class="topic-btn active" data-topic="全部">全部</button>
+      <button class="topic-btn" data-topic="励志">励志</button>
+      <button class="topic-btn" data-topic="幽默">幽默</button>
+      <button class="topic-btn" data-topic="人生">人生</button>
+      <button class="topic-btn" data-topic="成功">成功</button>
+      <button class="topic-btn" data-topic="智慧">智慧</button>
+      <button class="topic-btn" data-topic="勇气">勇气</button>
+      <button class="topic-btn" data-topic="梦想">梦想</button>
+      <button class="topic-btn" data-topic="坚持">坚持</button>
+      <button class="topic-btn" data-topic="态度">态度</button>
+    </div>
+
+    <div id="recommended-panel" class="recommended-panel">
+      <h4><i class="fas fa-lightbulb"></i> 推荐名言</h4>
+      <div id="recommended-list" class="recommended-list"></div>
     </div>
 
     <div class="container" style="margin-top: 10px; text-align: center;">
@@ -50,6 +82,8 @@
         <button id="copy-quote" class="btn">Copy</button>
         <button id="gen-ai" class="btn">Ai_Quotes</button>
       </div>
+    </div>
+
     </div>
 
     <script src="./assets/js/script.js"></script>

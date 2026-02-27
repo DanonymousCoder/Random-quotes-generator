@@ -1,92 +1,345 @@
 const FAVORITES_KEY = "favoriteQuotes";
+const ALL_TOPICS = ["全部", "励志", "幽默", "人生", "成功", "智慧", "勇气", "梦想", "坚持", "态度"];
+const HISTORY_KEY = "quoteHistory";
+const TOPIC_STATS_KEY = "topicStats";
+let selectedTopics = ["全部"];
+let currentQuote = null;
 
-// DOM
-const quoteText = document.getElementById("quote");
-const newQuoteButton = document.getElementById("generate");
-const categorySelect = document.getElementById("category");
-const shareTwitterButton = document.getElementById("shareTwitter");
-const darkModeToggle = document.getElementById("dark-mode-toggle");
-const copyQuoteButton = document.getElementById("copy-quote");
-const favoriteIcon = document.getElementById("favorite-icon");
-const authorText = document.getElementById("author");
-const authorImage = document.getElementById("author-image");
+document.addEventListener("DOMContentLoaded", function() {
+  const quoteText = document.getElementById("quote");
+  const newQuoteButton = document.getElementById("generate");
+  const categorySelect = document.getElementById("category");
+  const shareTwitterButton = document.getElementById("shareTwitter");
+  const darkModeToggle = document.getElementById("dark-mode-toggle");
+  const copyQuoteButton = document.getElementById("copy-quote");
+  const favoriteIcon = document.getElementById("favorite-icon");
+  const authorText = document.getElementById("author");
+  const authorImage = document.getElementById("author-image");
+  const historyToggle = document.getElementById("history-toggle");
+  const historyPanel = document.getElementById("history-panel");
+  const historyOverlay = document.getElementById("history-overlay");
+  const clearHistory = document.getElementById("clear-history");
+  const closeHistory = document.getElementById("close-history");
 
-// quotes array
-const quotes = {
+  const quotes = {
   motivational: [
     {
       text: "The greatest glory in living lies not in never falling, but in rising every time we fall.",
       author: "Nelson Mandela",
+      topics: ["励志", "勇气", "坚持"],
     },
     {
       text: "The way to get started is to quit talking and begin doing.",
       author: "Walt Disney",
+      topics: ["励志", "行动", "成功"],
     },
     {
-      text: "Your time is limited, so don’t waste it living someone else’s life.",
+      text: "Your time is limited, so don't waste it living someone else's life.",
       author: "Steve Jobs",
+      topics: ["人生", "励志", "梦想"],
+    },
+    {
+      text: "Success is not final, failure is not fatal: It is the courage to continue that counts.",
+      author: "Winston Churchill",
+      topics: ["成功", "勇气", "坚持"],
+    },
+    {
+      text: "The only limit to our realization of tomorrow will be our doubts of today.",
+      author: "Franklin D. Roosevelt",
+      topics: ["励志", "梦想", "态度"],
+    },
+    {
+      text: "It does not matter how slowly you go as long as you do not stop.",
+      author: "Confucius",
+      topics: ["坚持", "励志", "成功"],
     }
   ],
   funny: [
     {
       text: "I'm not arguing, I'm just explaining why I'm right.",
       author: "Unknown",
+      topics: ["幽默", "智慧"],
     },
     {
-      text: "Why don’t skeletons fight each other? They don’t have the guts.",
+      text: "Why don't skeletons fight each other? They don't have the guts.",
       author: "Unknown",
+      topics: ["幽默"],
     },
     {
       text: "My fake plants died because I did not pretend to water them.",
       author: "Mitch Hedberg",
+      topics: ["幽默"],
+    },
+    {
+      text: "The only way to keep your health is to eat what you don't want, drink what you don't like, and do what you'd rather not.",
+      author: "Mark Twain",
+      topics: ["幽默", "人生"],
+    },
+    {
+      text: "I have not failed. I've just found 10,000 ways that won't work.",
+      author: "Thomas Edison",
+      topics: ["幽默", "励志", "成功"],
+    },
+    {
+      text: "A day without sunshine is like, you know, night.",
+      author: "Steve Martin",
+      topics: ["幽默", "智慧"],
     }
   ],
   inspirational: [
     {
-      text: "Life is what happens when you’re busy making other plans.",
+      text: "Life is what happens when you're busy making other plans.",
       author: "John Lennon",
+      topics: ["人生", "智慧"],
     },
     {
-      text: "If you look at what you have in life, you’ll always have more.",
+      text: "If you look at what you have in life, you'll always have more.",
       author: "Oprah Winfrey",
+      topics: ["人生", "态度", "成功"],
     },
     {
       text: "If life were predictable it would cease to be life, and be without flavor.",
       author: "Eleanor Roosevelt",
+      topics: ["人生", "智慧", "态度"],
+    },
+    {
+      text: "The purpose of our lives is to be happy.",
+      author: "Dalai Lama",
+      topics: ["人生", "态度", "智慧"],
+    },
+    {
+      text: "Get busy living or get busy dying.",
+      author: "Stephen King",
+      topics: ["人生", "勇气", "励志"],
+    },
+    {
+      text: "You only live once, but if you do it right, once is enough.",
+      author: "Mae West",
+      topics: ["人生", "梦想", "态度"],
+    },
+    {
+      text: "Many of life's failures are people who did not realize how close they were to success when they gave up.",
+      author: "Thomas Edison",
+      topics: ["成功", "坚持", "励志"],
+    },
+    {
+      text: "If you want to live a happy life, tie it to a goal, not to people or things.",
+      author: "Albert Einstein",
+      topics: ["梦想", "成功", "人生"],
     }
   ],
 };
 
+function getAllQuotes() {
+  return [...quotes.motivational, ...quotes.funny, ...quotes.inspirational];
+}
+
+function getQuotesByTopics(topics) {
+  if (topics.length === 0 || topics.includes("全部")) {
+    return getAllQuotes();
+  }
+  return getAllQuotes().filter(quote => 
+    topics.some(topic => quote.topics.includes(topic))
+  );
+}
+
+function initTopicButtons() {
+  const topicButtons = document.querySelectorAll(".topic-btn");
+  topicButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const topic = btn.dataset.topic;
+      
+      if (topic === "全部") {
+        selectedTopics = ["全部"];
+        topicButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+      } else {
+        if (selectedTopics.includes("全部")) {
+          selectedTopics = [];
+          topicButtons.forEach(b => b.classList.remove("active"));
+        }
+        
+        if (selectedTopics.includes(topic)) {
+          selectedTopics = selectedTopics.filter(t => t !== topic);
+          btn.classList.remove("active");
+        } else {
+          selectedTopics.push(topic);
+          btn.classList.add("active");
+        }
+        
+        if (selectedTopics.length === 0) {
+          selectedTopics = ["全部"];
+          document.querySelector('.topic-btn[data-topic="全部"]').classList.add("active");
+        }
+      }
+      
+      recordTopicStats(selectedTopics);
+      updateRecommendedPanel();
+    });
+  });
+}
+
+function getHistory() {
+  return JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+}
+
+function saveHistory(quote) {
+  const history = getHistory();
+  const exists = history.find(h => h.text === quote.text);
+  if (!exists) {
+    history.unshift(quote);
+    if (history.length > 50) {
+      history.pop();
+    }
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  }
+}
+
+function updateHistoryPanel() {
+  const historyList = document.getElementById("history-list");
+  const history = getHistory();
+  
+  if (history.length === 0) {
+    historyList.innerHTML = '<p style="text-align:center;color:#888;">暂无历史记录</p>';
+    return;
+  }
+  
+  historyList.innerHTML = history.map((quote, index) => `
+    <div class="history-item" data-index="${index}">
+      <div class="history-item-text">${quote.text}</div>
+      <div class="history-item-author">— ${quote.author}</div>
+    </div>
+  `).join("");
+  
+  historyList.querySelectorAll(".history-item").forEach(item => {
+    item.addEventListener("click", function() {
+      const index = parseInt(this.dataset.index);
+      const quote = history[index];
+      displayQuoteDirectly(quote);
+    });
+  });
+}
+
+function displayQuoteDirectly(quote) {
+  quoteText.innerHTML = quote.text;
+  authorText.textContent = quote.author;
+  currentQuote = quote;
+  updateFavoriteIconColor();
+  
+  fetchWikipediaImage(quote.author).then(url => {
+    authorImage.src = url;
+  });
+}
+
+function recordTopicStats(topics) {
+  const stats = JSON.parse(localStorage.getItem(TOPIC_STATS_KEY)) || {};
+  const topicsWithoutAll = topics.filter(t => t !== "全部");
+  
+  if (topicsWithoutAll.length > 0) {
+    topicsWithoutAll.forEach(topic => {
+      stats[topic] = (stats[topic] || 0) + 1;
+    });
+    localStorage.setItem(TOPIC_STATS_KEY, JSON.stringify(stats));
+  }
+}
+
+function getTopTopics(n = 3) {
+  const stats = JSON.parse(localStorage.getItem(TOPIC_STATS_KEY)) || {};
+  return Object.entries(stats)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, n)
+    .map(item => item[0]);
+}
+
+function updateRecommendedPanel() {
+  const recommendedList = document.getElementById("recommended-list");
+  const topTopics = getTopTopics(3);
+  
+  if (topTopics.length === 0) {
+    recommendedList.innerHTML = '<p style="text-align:center;color:#888;">选择主题后将为您推荐</p>';
+    return;
+  }
+  
+  const relevantQuotes = getQuotesByTopics(topTopics);
+  const shuffled = [...relevantQuotes].sort(() => Math.random() - 0.5);
+  const recommended = shuffled.slice(0, 3);
+  
+  recommendedList.innerHTML = recommended.map((quote, index) => `
+    <div class="recommended-item" data-index="${index}">
+      ${quote.text}
+    </div>
+  `).join("");
+  
+  recommendedList.querySelectorAll(".recommended-item").forEach((item, index) => {
+    item.addEventListener("click", () => {
+      displayQuoteDirectly(recommended[index]);
+    });
+  });
+}
+
+function initHistoryPanelToggle() {
+  const historyToggle = document.getElementById("history-toggle");
+  const historyPanel = document.getElementById("history-panel");
+  const historyOverlay = document.getElementById("history-overlay");
+  const clearHistory = document.getElementById("clear-history");
+  const closeHistory = document.getElementById("close-history");
+  
+  function openHistoryPanel() {
+    historyPanel.classList.add("open");
+    historyOverlay.classList.add("show");
+    updateHistoryPanel();
+  }
+  
+  function closeHistoryPanel() {
+    historyPanel.classList.remove("open");
+    historyOverlay.classList.remove("show");
+  }
+  
+  historyToggle.addEventListener("click", () => {
+    if (historyPanel.classList.contains("open")) {
+      closeHistoryPanel();
+    } else {
+      openHistoryPanel();
+    }
+  });
+  
+  closeHistory.addEventListener("click", closeHistoryPanel);
+  historyOverlay.addEventListener("click", closeHistoryPanel);
+  
+  clearHistory.addEventListener("click", () => {
+    localStorage.removeItem(HISTORY_KEY);
+    updateHistoryPanel();
+  });
+}
+
 // event listener
 newQuoteButton.addEventListener("click", newQuote);
+initTopicButtons();
+initHistoryPanelToggle();
 darkModeToggle.addEventListener("click", toggleDarkMode);
 copyQuoteButton.addEventListener("click", copyQuote);
 favoriteIcon.addEventListener("click", toggleFavorite);
 
-// newQuote function
 async function newQuote() {
-  // Disable the button to prevent multiple clicks
   buttonDisabled("true");
+  favoriteIcon.style.color = "#ef8354";
 
-  // Set the icon to orange while a new quote is generating
-  favoriteIcon.style.color = "#ef8354"; // 주황색으로 설정
+  const filteredQuotes = getQuotesByTopics(selectedTopics);
+  const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
+  const selectedQuote = filteredQuotes[randomIndex];
+  currentQuote = selectedQuote;
 
-  const selectedCategory = categorySelect.value; // Get the selected category from the dropdown
-  const categoryQuotes = quotes[selectedCategory]; // Get quotes from the selected category
-  const randomIndex = Math.floor(Math.random() * categoryQuotes.length); // Get a random quote index
-  const selectedQuote = categoryQuotes[randomIndex]; // Get the random quote from the selected category
-
-  // Enable the button after the quote is fully displayed
   setTimeout(() => {
     buttonDisabled("false");
-  }, selectedQuote.text.length * 60); // Adjust the delay based on typewriter speed and quote length
+  }, selectedQuote.text.length * 60);
 
   typeWriterEffect(selectedQuote.text, updateFavoriteIconColor);
   authorText.textContent = selectedQuote.author;
 
-  // Fetch images from Wikipedia
   const authorImageUrl = await fetchWikipediaImage(selectedQuote.author);
   authorImage.src = authorImageUrl;
+
+  saveHistory(selectedQuote);
 }
 
 // Function to implement typewriter effect
@@ -253,6 +506,7 @@ function updateFavoriteIconColor() {
 
 // Initial icon color setup when the page loads
 updateFavoriteIconColor();
+updateRecommendedPanel();
 
 // Wikipedia API request function
 async function fetchWikipediaImage(authorName) {
@@ -280,3 +534,4 @@ async function fetchWikipediaImage(authorName) {
     return "./assets/images/default.jpg"; // Handle errors
   }
 }
+});
