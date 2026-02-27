@@ -1,4 +1,7 @@
 const FAVORITES_KEY = "favoriteQuotes";
+const HISTORY_KEY = "quoteHistory";
+const THEME_HISTORY_KEY = "themeHistory";
+const MAX_HISTORY = 10;
 
 // DOM
 const quoteText = document.getElementById("quote");
@@ -10,58 +13,163 @@ const copyQuoteButton = document.getElementById("copy-quote");
 const favoriteIcon = document.getElementById("favorite-icon");
 const authorText = document.getElementById("author");
 const authorImage = document.getElementById("author-image");
+const quoteThemesDiv = document.getElementById("quote-themes");
+const themeButtonsContainer = document.getElementById("theme-buttons");
 
-// quotes array
+// 历史记录面板 DOM - 延迟获取确保DOM已加载
+let historyToggle, historyContent, historyIcon, historyList;
+let recommendList, recommendThemes;
+
+function initDOMElements() {
+  historyToggle = document.getElementById("history-toggle");
+  historyContent = document.getElementById("history-content");
+  historyIcon = document.getElementById("history-icon");
+  historyList = document.getElementById("history-list");
+  recommendList = document.getElementById("recommend-list");
+  recommendThemes = document.getElementById("recommend-themes");
+  
+  console.log('DOM元素初始化:');
+  console.log('historyToggle:', !!historyToggle);
+  console.log('historyContent:', !!historyContent);
+  console.log('historyList:', !!historyList);
+  console.log('recommendList:', !!recommendList);
+}
+
+// 所有可用的主题标签
+const allThemes = ["人生", "成功", "智慧", "幽默", "爱情", "友谊", "成长", "梦想"];
+
+// quotes array - 每条名言包含主题标签
 const quotes = {
   motivational: [
     {
       text: "The greatest glory in living lies not in never falling, but in rising every time we fall.",
       author: "Nelson Mandela",
+      themes: ["人生", "成长"]
     },
     {
       text: "The way to get started is to quit talking and begin doing.",
       author: "Walt Disney",
+      themes: ["成功", "梦想"]
     },
     {
-      text: "Your time is limited, so don’t waste it living someone else’s life.",
+      text: "Your time is limited, so don't waste it living someone else's life.",
       author: "Steve Jobs",
+      themes: ["人生", "智慧"]
     }
   ],
   funny: [
     {
       text: "I'm not arguing, I'm just explaining why I'm right.",
       author: "Unknown",
+      themes: ["幽默"]
     },
     {
-      text: "Why don’t skeletons fight each other? They don’t have the guts.",
+      text: "Why don't skeletons fight each other? They don't have the guts.",
       author: "Unknown",
+      themes: ["幽默"]
     },
     {
       text: "My fake plants died because I did not pretend to water them.",
       author: "Mitch Hedberg",
+      themes: ["幽默", "人生"]
     }
   ],
   inspirational: [
     {
-      text: "Life is what happens when you’re busy making other plans.",
+      text: "Life is what happens when you're busy making other plans.",
       author: "John Lennon",
+      themes: ["人生", "智慧"]
     },
     {
-      text: "If you look at what you have in life, you’ll always have more.",
+      text: "If you look at what you have in life, you'll always have more.",
       author: "Oprah Winfrey",
+      themes: ["人生", "智慧"]
     },
     {
       text: "If life were predictable it would cease to be life, and be without flavor.",
       author: "Eleanor Roosevelt",
+      themes: ["人生", "成长"]
     }
   ],
 };
+
+// 当前选中的主题（多选）
+let selectedThemes = [];
 
 // event listener
 newQuoteButton.addEventListener("click", newQuote);
 darkModeToggle.addEventListener("click", toggleDarkMode);
 copyQuoteButton.addEventListener("click", copyQuote);
 favoriteIcon.addEventListener("click", toggleFavorite);
+
+// 根据选中的主题筛选名言
+function getFilteredQuotes() {
+  const selectedCategory = categorySelect.value;
+  const categoryQuotes = quotes[selectedCategory];
+  
+  // 如果没有选择任何主题或选择了"全部"，返回所有名言
+  if (selectedThemes.length === 0) {
+    return categoryQuotes;
+  }
+  
+  // 筛选包含至少一个选中主题的名言
+  return categoryQuotes.filter(quote => {
+    return quote.themes && quote.themes.some(theme => selectedThemes.includes(theme));
+  });
+}
+
+// 显示名言的主题标签
+function displayQuoteThemes(themes) {
+  if (!themes || themes.length === 0) {
+    quoteThemesDiv.innerHTML = '';
+    return;
+  }
+  
+  const themesHtml = themes.map(theme => 
+    `<span class="theme-tag">${theme}</span>`
+  ).join('');
+  quoteThemesDiv.innerHTML = themesHtml;
+}
+
+// 初始化主题按钮事件监听
+function initThemeButtons() {
+  const themeButtons = document.querySelectorAll('.theme-btn');
+  
+  themeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const theme = button.dataset.theme;
+      
+      if (theme === 'all') {
+        // 点击"全部"按钮时，清空所有选中主题
+        selectedThemes = [];
+        themeButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+      } else {
+        // 点击其他主题按钮
+        const allButton = document.querySelector('[data-theme="all"]');
+        allButton.classList.remove('active');
+        
+        if (selectedThemes.includes(theme)) {
+          // 如果已选中，则取消选中
+          selectedThemes = selectedThemes.filter(t => t !== theme);
+          button.classList.remove('active');
+        } else {
+          // 如果未选中，则添加选中
+          selectedThemes.push(theme);
+          button.classList.add('active');
+        }
+        
+        // 如果没有选中任何主题，自动选中"全部"
+        if (selectedThemes.length === 0) {
+          allButton.classList.add('active');
+        }
+      }
+      
+      // 重新生成符合筛选条件的名言
+      newQuote();
+    });
+  });
+}
 
 // newQuote function
 async function newQuote() {
@@ -71,10 +179,21 @@ async function newQuote() {
   // Set the icon to orange while a new quote is generating
   favoriteIcon.style.color = "#ef8354"; // 주황색으로 설정
 
-  const selectedCategory = categorySelect.value; // Get the selected category from the dropdown
-  const categoryQuotes = quotes[selectedCategory]; // Get quotes from the selected category
-  const randomIndex = Math.floor(Math.random() * categoryQuotes.length); // Get a random quote index
-  const selectedQuote = categoryQuotes[randomIndex]; // Get the random quote from the selected category
+  // 获取筛选后的名言列表
+  const filteredQuotes = getFilteredQuotes();
+  
+  // 如果没有符合条件的名言，显示提示
+  if (filteredQuotes.length === 0) {
+    quoteText.innerHTML = "当前筛选条件下没有名言，请尝试其他主题组合。";
+    authorText.textContent = "";
+    quoteThemesDiv.innerHTML = "";
+    authorImage.src = "./assets/images/default.jpg";
+    buttonDisabled("false");
+    return;
+  }
+  
+  const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
+  const selectedQuote = filteredQuotes[randomIndex];
 
   // Enable the button after the quote is fully displayed
   setTimeout(() => {
@@ -83,10 +202,244 @@ async function newQuote() {
 
   typeWriterEffect(selectedQuote.text, updateFavoriteIconColor);
   authorText.textContent = selectedQuote.author;
+  
+  // 显示主题标签
+  displayQuoteThemes(selectedQuote.themes);
 
   // Fetch images from Wikipedia
   const authorImageUrl = await fetchWikipediaImage(selectedQuote.author);
   authorImage.src = authorImageUrl;
+  
+  // 添加到历史记录
+  addToHistory(selectedQuote);
+  
+  // 记录用户筛选的主题偏好
+  recordThemePreference(selectedQuote.themes);
+  
+  // 更新推荐列表
+  updateRecommendations();
+}
+
+// ==================== 历史记录功能 ====================
+
+// 初始化历史记录面板
+function initHistoryPanel() {
+  console.log('初始化历史记录面板');
+  
+  if (!historyToggle || !historyContent || !historyIcon) {
+    console.error('历史记录面板DOM元素不存在');
+    return;
+  }
+  
+  // 加载并显示历史记录
+  renderHistory();
+  
+  // 默认折叠历史记录面板
+  historyContent.classList.add('collapsed');
+  
+  // 绑定折叠/展开事件
+  historyToggle.addEventListener('click', () => {
+    console.log('点击历史记录头部，当前折叠状态:', historyContent.classList.contains('collapsed'));
+    historyContent.classList.toggle('collapsed');
+    historyIcon.classList.toggle('fa-chevron-down');
+    historyIcon.classList.toggle('fa-chevron-up');
+  });
+}
+
+// 添加名言到历史记录
+function addToHistory(quote) {
+  console.log('添加名言到历史记录:', quote.text.substring(0, 30) + '...');
+  
+  let history = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+  console.log('当前历史记录数量:', history.length);
+  
+  // 检查是否已存在相同名言
+  const exists = history.some(item => item.text === quote.text);
+  if (exists) {
+    console.log('名言已存在，跳过添加');
+    return;
+  }
+  
+  // 添加新记录到开头
+  history.unshift({
+    text: quote.text,
+    author: quote.author,
+    themes: quote.themes || [],
+    timestamp: new Date().toISOString()
+  });
+  
+  // 限制历史记录数量
+  if (history.length > MAX_HISTORY) {
+    history = history.slice(0, MAX_HISTORY);
+  }
+  
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  renderHistory();
+}
+
+// 渲染历史记录列表
+function renderHistory() {
+  if (!historyList) {
+    console.error('historyList 元素不存在');
+    return;
+  }
+  
+  const history = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+  console.log('渲染历史记录，数量:', history.length);
+  
+  if (history.length === 0) {
+    historyList.innerHTML = '<p class="empty-history">暂无历史记录</p>';
+    return;
+  }
+  
+  const historyHtml = history.map((item, index) => {
+    const themesHtml = (item.themes || []).map(theme => 
+      `<span class="history-theme-tag">${theme}</span>`
+    ).join('');
+    
+    return `
+      <div class="history-item" data-index="${index}">
+        <div class="history-quote">"${item.text.substring(0, 50)}${item.text.length > 50 ? '...' : ''}"</div>
+        <div class="history-meta">
+          <span class="history-author">— ${item.author}</span>
+          <div class="history-themes">${themesHtml}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  historyList.innerHTML = historyHtml;
+  
+  // 绑定点击事件，点击历史记录可以重新显示该名言
+  historyList.querySelectorAll('.history-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const index = parseInt(item.dataset.index);
+      const history = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+      const selectedQuote = history[index];
+      
+      if (selectedQuote) {
+        quoteText.innerHTML = selectedQuote.text;
+        authorText.textContent = selectedQuote.author;
+        displayQuoteThemes(selectedQuote.themes);
+        updateFavoriteIconColor();
+      }
+    });
+  });
+}
+
+// ==================== 推荐名言功能 ====================
+
+// 记录用户主题偏好
+function recordThemePreference(themes) {
+  if (!themes || themes.length === 0) return;
+  
+  let themeHistory = JSON.parse(localStorage.getItem(THEME_HISTORY_KEY)) || {};
+  
+  themes.forEach(theme => {
+    themeHistory[theme] = (themeHistory[theme] || 0) + 1;
+  });
+  
+  localStorage.setItem(THEME_HISTORY_KEY, JSON.stringify(themeHistory));
+}
+
+// 获取用户最感兴趣的主题
+function getTopThemes(count = 3) {
+  const themeHistory = JSON.parse(localStorage.getItem(THEME_HISTORY_KEY)) || {};
+  
+  // 按浏览次数排序
+  const sortedThemes = Object.entries(themeHistory)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, count)
+    .map(([theme]) => theme);
+  
+  return sortedThemes;
+}
+
+// 更新推荐列表
+function updateRecommendations() {
+  if (!recommendList) {
+    console.error('recommendList 元素不存在');
+    return;
+  }
+  
+  const topThemes = getTopThemes(3);
+  console.log('更新推荐，用户关注主题:', topThemes);
+  
+  if (topThemes.length === 0) {
+    recommendList.innerHTML = '<p class="empty-recommend">浏览更多名言以获取个性化推荐</p>';
+    if (recommendThemes) recommendThemes.textContent = '';
+    return;
+  }
+  
+  // 显示推荐依据的主题
+  recommendThemes.textContent = `基于您关注的：${topThemes.join('、')}`;
+  
+  // 从所有分类中查找包含这些主题的名言
+  const allQuotes = [];
+  Object.values(quotes).forEach(categoryQuotes => {
+    allQuotes.push(...categoryQuotes);
+  });
+  
+  // 获取历史记录，排除已浏览的名言
+  const history = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+  const historyTexts = history.map(h => h.text);
+  
+  // 筛选包含用户感兴趣主题的名言
+  const recommendedQuotes = allQuotes.filter(quote => {
+    // 排除已浏览的
+    if (historyTexts.includes(quote.text)) return false;
+    
+    // 检查是否包含用户感兴趣的主题
+    return quote.themes && quote.themes.some(theme => topThemes.includes(theme));
+  });
+  
+  // 随机选择最多3条推荐
+  const shuffled = recommendedQuotes.sort(() => 0.5 - Math.random());
+  const selected = shuffled.slice(0, 3);
+  
+  if (selected.length === 0) {
+    recommendList.innerHTML = '<p class="empty-recommend">已为您展示所有相关名言，继续探索其他主题吧！</p>';
+    return;
+  }
+  
+  // 渲染推荐列表
+  const recommendHtml = selected.map((quote, index) => {
+    const themesHtml = (quote.themes || []).map(theme => 
+      `<span class="recommend-theme-tag">${theme}</span>`
+    ).join('');
+    
+    // 将名言数据存储在 data 属性中，避免闭包问题
+    const quoteData = encodeURIComponent(JSON.stringify(quote));
+    
+    return `
+      <div class="recommend-item" data-quote="${quoteData}">
+        <div class="recommend-quote">"${quote.text.substring(0, 60)}${quote.text.length > 60 ? '...' : ''}"</div>
+        <div class="recommend-meta">
+          <span class="recommend-author">— ${quote.author}</span>
+          <div class="recommend-themes">${themesHtml}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  recommendList.innerHTML = recommendHtml;
+  
+  // 绑定点击事件
+  recommendList.querySelectorAll('.recommend-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const quoteData = item.getAttribute('data-quote');
+      const quote = JSON.parse(decodeURIComponent(quoteData));
+      
+      if (quote) {
+        quoteText.innerHTML = quote.text;
+        authorText.textContent = quote.author;
+        displayQuoteThemes(quote.themes);
+        addToHistory(quote);
+        recordThemePreference(quote.themes);
+        updateFavoriteIconColor();
+      }
+    });
+  });
 }
 
 // Function to implement typewriter effect
@@ -251,8 +604,20 @@ function updateFavoriteIconColor() {
   favoriteIcon.style.color = isQuoteFavorited(quote) ? "yellow" : "#ef8354";
 }
 
+// 初始化DOM元素
+initDOMElements();
+
 // Initial icon color setup when the page loads
 updateFavoriteIconColor();
+
+// 初始化主题按钮
+initThemeButtons();
+
+// 初始化历史记录面板
+initHistoryPanel();
+
+// 初始化推荐列表
+updateRecommendations();
 
 // Wikipedia API request function
 async function fetchWikipediaImage(authorName) {
