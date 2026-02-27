@@ -11,6 +11,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        width: 100%;
       }
     </style>
   </head>
@@ -25,6 +26,10 @@
       <img src="assets/images/logo.png" alt="Random Quotes Generator Logo" style="width: 400px; height: auto;">
     </div>
 
+    <div class="tag-filter-container" id="tag-filter-container">
+      <button class="tag-btn active" data-tag="all">全部</button>
+    </div>
+
     <div class="container" style="margin-top: 10px; text-align: center;">
       <div>
         <label for="category">Choose a category:</label>
@@ -37,6 +42,7 @@
       <div class="quote-container">
         <div class="quote-content">
           <div id="quote">Your quote will appear here...</div>
+          <div id="quote-tags" class="quote-tags"></div>
         </div>
         <div class="author-section">
           <img id="author-image" src="./assets/images/default.jpg" alt="Author Image" class="author-image" />
@@ -50,6 +56,25 @@
         <button id="copy-quote" class="btn">Copy</button>
         <button id="gen-ai" class="btn">Ai_Quotes</button>
       </div>
+    </div>
+
+    <div class="history-panel" id="history-panel">
+      <div class="history-header" id="history-toggle">
+        <span>历史记录</span>
+        <i class="fas fa-chevron-down" id="history-icon"></i>
+      </div>
+      <div class="history-content" id="history-content">
+        <div id="history-list"></div>
+        <button id="clear-history" class="btn-clear">清空历史</button>
+      </div>
+    </div>
+
+    <div class="recommend-panel" id="recommend-panel">
+      <div class="recommend-header">
+        <span>推荐名言</span>
+        <span class="recommend-hint">基于您的筛选偏好</span>
+      </div>
+      <div class="recommend-content" id="recommend-content"></div>
     </div>
 
     <script src="./assets/js/script.js"></script>
