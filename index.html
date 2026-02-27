@@ -25,6 +25,22 @@
       <img src="assets/images/logo.png" alt="Random Quotes Generator Logo" style="width: 400px; height: auto;">
     </div>
 
+    <!-- 主题筛选按钮区域 -->
+    <div class="theme-filter-container">
+      <span class="theme-filter-label">主题筛选：</span>
+      <div class="theme-buttons" id="theme-buttons">
+        <button class="theme-btn active" data-theme="all">全部</button>
+        <button class="theme-btn" data-theme="人生">人生</button>
+        <button class="theme-btn" data-theme="成功">成功</button>
+        <button class="theme-btn" data-theme="智慧">智慧</button>
+        <button class="theme-btn" data-theme="幽默">幽默</button>
+        <button class="theme-btn" data-theme="爱情">爱情</button>
+        <button class="theme-btn" data-theme="友谊">友谊</button>
+        <button class="theme-btn" data-theme="成长">成长</button>
+        <button class="theme-btn" data-theme="梦想">梦想</button>
+      </div>
+    </div>
+
     <div class="container" style="margin-top: 10px; text-align: center;">
       <div>
         <label for="category">Choose a category:</label>
@@ -37,6 +53,8 @@
       <div class="quote-container">
         <div class="quote-content">
           <div id="quote">Your quote will appear here...</div>
+          <!-- 主题标签显示区域 -->
+          <div id="quote-themes" class="quote-themes"></div>
         </div>
         <div class="author-section">
           <img id="author-image" src="./assets/images/default.jpg" alt="Author Image" class="author-image" />
@@ -49,6 +67,36 @@
         <button id="dark-mode-toggle" class="btn">Dark Mode</button>
         <button id="copy-quote" class="btn">Copy</button>
         <button id="gen-ai" class="btn">Ai_Quotes</button>
+      </div>
+    </div>
+
+    <!-- 可折叠的历史记录面板 -->
+    <div class="history-panel" id="history-panel">
+      <div class="history-header" id="history-toggle">
+        <span class="history-title">
+          <i class="fas fa-history"></i> 历史记录
+        </span>
+        <i class="fas fa-chevron-down" id="history-icon"></i>
+      </div>
+      <div class="history-content" id="history-content">
+        <div id="history-list" class="history-list">
+          <p class="empty-history">暂无历史记录</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 推荐名言面板 -->
+    <div class="recommend-panel" id="recommend-panel">
+      <div class="recommend-header">
+        <span class="recommend-title">
+          <i class="fas fa-thumbs-up"></i> 为您推荐
+        </span>
+        <span class="recommend-subtitle" id="recommend-themes"></span>
+      </div>
+      <div class="recommend-content" id="recommend-content">
+        <div id="recommend-list" class="recommend-list">
+          <p class="empty-recommend">浏览更多名言以获取个性化推荐</p>
+        </div>
       </div>
     </div>
 
